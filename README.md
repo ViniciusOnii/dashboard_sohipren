@@ -46,6 +46,69 @@
 7. **Acessar o Projeto no Navegador**
    - Após rodar o comando acima, o Streamlit abrirá automaticamente no navegador. Caso contrário, você pode acessar o projeto manualmente pelo link que aparecerá no terminal, como `http://localhost:8501`.
 
+## Testes Automatizados
+
+O projeto inclui uma suíte completa de testes automatizados usando unittest e pytest. Os testes cobrem as principais funcionalidades do sistema e garantem sua robustez.
+
+### Estrutura dos Testes
+
+1. **Testes de Funcionalidades Principais** (`test_data_manager.py`):
+   - Cadastro e manipulação de registros de manutenção
+   - Comparação entre dados de diferentes áreas
+   - Persistência de dados
+   - Validação de dados
+
+2. **Testes Analíticos** (`test_analytics.py`):
+   - Cálculos de custos totais
+   - Análises de frequência
+   - Médias por tipo de manutenção
+   - Análises temporais
+   - Comparações entre períodos
+
+3. **Testes com Mocks** (`test_mock_operations.py`):
+   - Simulação de operações de I/O
+   - Teste de criação de diretórios
+   - Teste de manipulação de arquivos
+   - Tratamento de erros
+
+### Executando os Testes
+
+1. **Executar todos os testes**:
+   ```bash
+   python -m pytest tests/ -v
+   ```
+
+2. **Executar testes com cobertura**:
+   ```bash
+   python -m pytest tests/ --cov=. --cov-report=term-missing -v
+   ```
+
+3. **Executar um arquivo de teste específico**:
+   ```bash
+   python -m pytest tests/test_data_manager.py -v
+   ```
+
+4. **Executar um teste específico**:
+   ```bash
+   python -m pytest tests/test_data_manager.py::TestDataManager::test_add_maintenance_record -v
+   ```
+
+### Cobertura de Testes
+
+O projeto mantém uma alta cobertura de testes nas funcionalidades principais:
+- `data_manager.py`: 93% de cobertura
+- Arquivos de teste: ~98% de cobertura
+- Total do projeto: 64% de cobertura
+
+### Contribuindo com Testes
+
+Ao adicionar novas funcionalidades ao projeto, siga estas diretrizes:
+1. Crie testes unitários para novas funções
+2. Mantenha a cobertura de testes acima de 80% para código novo
+3. Use mocks para simular dependências externas
+4. Documente os testes com descrições claras
+5. Verifique se todos os testes passam antes de fazer commit
+
 ## Estrutura do Projeto
 
 

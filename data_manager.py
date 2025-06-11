@@ -46,6 +46,16 @@ class DataManager:
     # Métodos para Manutenção
     def add_maintenance_record(self, record):
         """Adiciona um novo registro de manutenção"""
+        # Validação dos campos obrigatórios
+        campos_obrigatorios = ["peca", "tipo_manutencao", "descricao", "custo"]
+        for campo in campos_obrigatorios:
+            if campo not in record:
+                raise ValueError(f"Campo obrigatório '{campo}' não encontrado no registro")
+        
+        # Validação do tipo de dados
+        if not isinstance(record["custo"], (int, float)):
+            raise ValueError("O campo 'custo' deve ser um número")
+            
         data = self._load_json(self.maintenance_file)
         record['timestamp'] = datetime.now().isoformat()
         data.append(record)
@@ -58,6 +68,10 @@ class DataManager:
     # Métodos para Histórico de Comparações
     def add_comparison(self, item1, item2, diferenca):
         """Adiciona uma nova comparação ao histórico"""
+        # Validação dos tipos de dados
+        if not isinstance(diferenca, (int, float)):
+            raise ValueError("O campo 'diferenca' deve ser um número")
+        
         try:
             df = pd.read_csv(self.comparison_file, parse_dates=['data'])
         except pd.errors.EmptyDataError:
@@ -69,7 +83,7 @@ class DataManager:
                 'diferenca': pd.Series(dtype='float64')
             })
         
-        # Cria o novo registro com tipos explícitos
+        # Cria o novo registro com tipos explícitos e valores não-nulos
         nova_comparacao = pd.DataFrame({
             'data': [pd.Timestamp.now()],
             'item1': [str(item1)],
@@ -77,8 +91,17 @@ class DataManager:
             'diferenca': [float(diferenca)]
         })
         
+        # Garante os tipos corretos
+        nova_comparacao['data'] = nova_comparacao['data'].astype('datetime64[ns]')
+        nova_comparacao['item1'] = nova_comparacao['item1'].astype('str')
+        nova_comparacao['item2'] = nova_comparacao['item2'].astype('str')
+        nova_comparacao['diferenca'] = nova_comparacao['diferenca'].astype('float64')
+        
         # Concatena garantindo que os tipos de dados sejam preservados
-        df = pd.concat([df, nova_comparacao], ignore_index=True)
+        if len(df) == 0:
+            df = nova_comparacao
+        else:
+            df = pd.concat([df, nova_comparacao], ignore_index=True)
         
         # Salva o DataFrame atualizado
         df.to_csv(self.comparison_file, index=False)
